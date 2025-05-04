@@ -4,12 +4,10 @@
 void display_menu() {
     printf("\nStack Management System\n");
     printf("1. Create stack and find sum until min element\n");
-    printf("2. Create first stack\n");
-    printf("3. Create second stack\n");
+    printf("2. Create first stack (descending order)\n");
+    printf("3. Create second stack (ascending order)\n");
     printf("4. Merge two stacks in ascending order\n");
     printf("5. View stack contents\n");
-    printf("6. Push element to stack\n");
-    printf("7. Pop element from stack\n");
     printf("0. Exit\n");
     printf("Enter your choice: ");
 }
@@ -78,7 +76,7 @@ int main() {
                 int capacity = getPositiveInteger("Enter size for first stack: ");
                 stack1 = createFirstStack(capacity);
                 if (stack1) {
-                    printf("\nFirst stack created:\n");
+                    printf("\nFirst stack created (descending order):\n");
                     printStack(stack1);
                 }
                 break;
@@ -91,7 +89,7 @@ int main() {
                 int capacity = getPositiveInteger("Enter size for second stack: ");
                 stack2 = createSecondStack(capacity);
                 if (stack2) {
-                    printf("\nSecond stack created:\n");
+                    printf("\nSecond stack created (ascending order):\n");
                     printStack(stack2);
                 }
                 break;
@@ -101,10 +99,12 @@ int main() {
                     printf("Please create both stacks first.\n");
                     break;
                 }
-                if (mergedStack) destroyStack(mergedStack);
+                if (mergedStack) {
+                    destroyStack(mergedStack);
+                }
                 mergedStack = createMergedStack(stack1, stack2);
                 if (mergedStack) {
-                    printf("\nMerged stack:\n");
+                    printf("\nMerged stack (ascending order):\n");
                     printStack(mergedStack);
                 }
                 break;
@@ -138,82 +138,6 @@ int main() {
                 } else {
                     printf("Stack not created.\n");
                 }
-                break;
-            }
-            case 6: {
-                printf("\nSelect stack to push to:\n");
-                printf("1. Main stack\n");
-                printf("2. First stack\n");
-                printf("3. Second stack\n");
-                printf("Choice: ");
-                int stackChoice;
-                if (scanf("%d", &stackChoice) != 1) {
-                    printf("Input error.\n");
-                    while (getchar() != '\n');
-                    break;
-                }
-                Stack *targetStack = NULL;
-                switch (stackChoice) {
-                    case 1: targetStack = mainStack; break;
-                    case 2: targetStack = stack1; break;
-                    case 3: targetStack = stack2; break;
-                    default:
-                        printf("Invalid choice.\n");
-                        break;
-                }
-                if (!targetStack) {
-                    printf("Please create the stack first.\n");
-                    break;
-                }
-                if (isFull(targetStack)) {
-                    printf("Stack is full.\n");
-                    break;
-                }
-                printf("Enter element value: ");
-                int value;
-                if (scanf("%d", &value) != 1) {
-                    printf("Input error.\n");
-                    while (getchar() != '\n');
-                    break;
-                }
-                push(targetStack, value);
-                printf("Element pushed. Current stack:\n");
-                printStack(targetStack);
-                break;
-            }
-            case 7: {
-                printf("\nSelect stack to pop from:\n");
-                printf("1. Main stack\n");
-                printf("2. First stack\n");
-                printf("3. Second stack\n");
-                printf("Choice: ");
-                int stackChoice;
-                if (scanf("%d", &stackChoice) != 1) {
-                    printf("Input error.\n");
-                    while (getchar() != '\n');
-                    break;
-                }
-                Stack *targetStack = NULL;
-                switch (stackChoice) {
-                    case 1: targetStack = mainStack; break;
-                    case 2: targetStack = stack1; break;
-                    case 3: targetStack = stack2; break;
-                    default:
-                        printf("Invalid choice.\n");
-                        break;
-                }
-                if (!targetStack) {
-                    printf("Stack not created.\n");
-                    break;
-                }
-                if (isEmpty(targetStack)) {
-                    printf("Stack is empty.\n");
-                    break;
-                }
-                int value = pop(targetStack);
-                printf("Popped element: %d\n", value);
-                printf("Current stack:\n");
-                printStack(targetStack);
                 break;
             }
             default:

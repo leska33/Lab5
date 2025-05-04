@@ -16,7 +16,6 @@ bool isEmpty(Stack *stack);
 bool isFull(Stack *stack);
 void push(Stack *stack, int item);
 int pop(Stack *stack);
-int peek(Stack *stack);
 void printStack(Stack *stack);
 void destroyStack(Stack *stack);
 int sumUntilMin(Stack *stack);

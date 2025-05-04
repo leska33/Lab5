@@ -61,18 +61,6 @@ int pop(Stack *stack) {
     return stack->data[stack->top--];
 }
 
-int peek(Stack *stack) {
-    if (!stack) {
-        printf("Error: Stack does not exist.\n");
-        return INT_MIN;
-    }
-    if (isEmpty(stack)) {
-        printf("Error: Stack is empty.\n");
-        return INT_MIN;
-    }
-    return stack->data[stack->top];
-}
-
 void printStack(Stack *stack) {
     if (!stack) {
         printf("Error: Stack does not exist.\n");
@@ -127,12 +115,21 @@ Stack* createFirstStack(int capacity) {
         return NULL;
     }
     printf("Enter %d elements for first stack:\n", capacity);
+    int prev = INT_MAX;
     for (int i = 0; i < capacity; i++) {
-        printf("Element %d: ", i + 1);
+        printf("Element %d (must be <= %d): ", i + 1, prev);
         int value;
-        while (scanf("%d", &value) != 1) {
-            printf("Invalid input. Please enter an integer: ");
-            while (getchar() != '\n');
+        while (1) {
+            while (scanf("%d", &value) != 1) {
+                printf("Invalid input: ");
+                while (getchar() != '\n');
+            }
+            if (value <= prev) {
+                prev = value;
+                break;
+            } else {
+                printf("Error. The number must be less (%d). Try again: ", prev);
+            }
         }
         push(stack, value);
     }
@@ -145,12 +142,21 @@ Stack* createSecondStack(int capacity) {
         return NULL;
     }
     printf("Enter %d elements for second stack:\n", capacity);
+    int prev = INT_MIN;
     for (int i = 0; i < capacity; i++) {
-        printf("Element %d: ", i + 1);
+        printf("Element %d (must be > %d): ", i + 1, prev);
         int value;
-        while (scanf("%d", &value) != 1) {
-            printf("Invalid input. Please enter an integer: ");
-            while (getchar() != '\n');
+        while (1) {
+            while (scanf("%d", &value) != 1) {
+                printf("Invalid input. Please enter an integer: ");
+                while (getchar() != '\n');
+            }
+            if (value > prev) {
+                prev = value;
+                break;
+            } else {
+                printf("Error. The number must be greater (%d). Try again: ", prev);
+            }
         }
         push(stack, value);
     }
@@ -162,41 +168,28 @@ Stack* createMergedStack(Stack *stack1, Stack *stack2) {
         printf("Error: One of the stacks does not exist.\n");
         return NULL;
     }
-    Stack *temp1 = createStack(stack1->capacity);
-    Stack *temp2 = createStack(stack2->capacity);
     Stack *result = createStack(stack1->capacity + stack2->capacity);
-    if (!temp1 || !temp2 || !result) {
-        destroyStack(temp1);
-        destroyStack(temp2);
-        destroyStack(result);
+    if (!result) {
         return NULL;
     }
-    for (int i = 0; i <= stack1->top; i++) {
-        push(temp1, stack1->data[i]);
-    }
-    for (int i = 0; i <= stack2->top; i++) {
-        push(temp2, stack2->data[i]);
-    }
-    while (!isEmpty(temp1) || !isEmpty(temp2)) {
-        if (isEmpty(temp1)) {
-            push(result, pop(temp2));
-        }
-        else if (isEmpty(temp2)) {
-            push(result, pop(temp1));
-        }
-        else if (peek(temp1) <= peek(temp2)) {
-            push(result, pop(temp1));
-        }
-        else {
-            push(result, pop(temp2));
+    int i = stack1->top;
+    int j = 0;
+    while (i >= 0 && j <= stack2->top) {
+        if (stack1->data[i] <= stack2->data[j]) {
+            push(result, stack1->data[i]);
+            i--;
+        } else {
+            push(result, stack2->data[j]);
+            j++;
         }
     }
-    destroyStack(temp1);
-    destroyStack(temp2);
-    Stack *finalResult = createStack(result->capacity);
-    while (!isEmpty(result)) {
-        push(finalResult, pop(result));
+    while (i >= 0) {
+        push(result, stack1->data[i]);
+        i--;
     }
-    destroyStack(result);
-    return finalResult;
+    while (j <= stack2->top) {
+        push(result, stack2->data[j]);
+        j++;
+    }
+    return result;
 }
